@@ -6,11 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const CalendarScreen = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [currentDate, setCurrentDate] = useState('');
-    const [billsToPay, setBillsToPay] = useState([
-        { id: 1, title: 'Electricity Bill', amount: 50, date: '2024-04-07' },
-        { id: 2, title: 'Internet Bill', amount: 30, date: '2024-04-10' },
-        { id: 3, title: 'Rent', amount: 500, date: '2024-04-06' },
-    ]);
+    const [billsToPay, setBillsToPay] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);
     const [newBillTitle, setNewBillTitle] = useState('');
@@ -20,46 +16,88 @@ const CalendarScreen = () => {
         const defaultDate = new Date().toISOString().split('T')[0];
         setSelectedDate(defaultDate);
         setCurrentDate(defaultDate);
+        fetchBills(defaultDate);
     }, []);
+    
+    const fetchBills = async (date) => {
+        try {
+            const response = await fetch(`/api/bills?date=${date}`);
+            if(!response.ok) {
+                throw new Error('Rror fetching bills');
+            }
+            const data = await response.json();
+            setBillsToPay(data);
+        } catch (error) {
+            console.error("Error fetching bills:", error);
+        }
+    } ;
 
-    const onDayPress = (day) => {
-        setSelectedDate(day.dateString);
-    };
-
-    const addBill = () => {
+    const addBill = async () => {
         if (newBillTitle && newBillAmount && selectedDate) {
-            const newBill = {
-                id: billsToPay.length + 1,
-                title: newBillTitle,
-                amount: parseFloat(newBillAmount),
-                date: selectedDate,
-            };
-            setBillsToPay([...billsToPay, newBill]);
-            setModalVisible(false);
-            setNewBillTitle('');
-            setNewBillAmount('');
+            try {
+                const reponse = await fetch("/api/bills", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: newBillTitle,
+                        amount: parseFloat(newBillAmount),
+                        date: selectedDate,
+                    }),
+                });
+                if (!response.ok) {
+                    throw new Error('Error adding bill');
+                }
+                fetchBills(selectedDate);
+                setModalVisible(false);
+                setNewBillTitle('');
+                setNewBillAmount('');
+            } catch (error) {
+                console.error("Error adding bill:", error);
+            }
         }
     };
 
-    const removeBill = (id) => {
-        setBillsToPay(billsToPay.filter((bill) => bill.id !== id));
-        setModalVisible(false);
+    const removeBill = async (id) => {
+        try {
+            const reponse = await fetch (`/api/bills/${id}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Error deleteing bill');
+            }
+            fetchBills(selectedDate);
+            setModalVisible(false);
+        } catch (error) {
+            console.error("Error deleting bill:", error);
+        }
     };
 
-    const editBill = () => {
+    const editBill = async () => {
         if (selectedBill && newBillTitle && newBillAmount) {
-            setBillsToPay(
-                billsToPay.map((bill) =>
-                    bill.id === selectedBill.id ? {
-                        ...bill,
+            try {
+                const response = await fetch (`/api/bills/${selectedBll.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                    },
+                    body: JSON.stringify({
                         title: newBillTitle,
-                        amount: parseFloat(newBillAmount)
-                    } : bill
-                )
-            );
-            setModalVisible(false);
-            setNewBillTitle('');
-            setNewBillAmount('');
+                        amount: parseFloat(newBillAmount),
+                        date: selectedDate,
+                    }),
+                });
+                if (!response.ok) {
+                    throw new Error('Error editing bill');
+                }
+                fetchBills(selectedDate);
+                setModalVisible(false);
+                setNewBillTitle('');
+                setNewBillAmount('');
+            } catch (error) {
+                console.error("Error editing bill:", error);
+            }
         }
     };
 
@@ -73,11 +111,21 @@ const CalendarScreen = () => {
         return new Date(dueDate) >= new Date(currentDate);
     };
 
+    const openModal = (bill) => {
+        setSelectedBill(bill);
+        setNewBillTitle(bill ? bill.title : '');
+        setNewBillAmount(bill ? String(bill.amount) : '');
+        setModalVisible(false);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.calendarContainer}>
                 <Calendar
-                    onDayPress={onDayPress}
+                    onDayPress={(day) => {
+                        setSelectedDate(day.dateString);
+                        fetchBills(day.dateString);
+                    }}
                     markedDates={{
                         [selectedDate]: { selected: true, selectedColor: 'tomato' },
                         [currentDate]: { selected: true, dotColor: 'black', marked: true },
@@ -89,29 +137,22 @@ const CalendarScreen = () => {
                 />
             </View>
             <View style={styles.billsContainer}>
-                {billsToPay
-                    .filter((bill) => bill.date === selectedDate)
-                    .map((bill) => (
-                        <TouchableOpacity
-                            key={bill.id}
-                            style={[
-                                styles.billItem,
-                                isOverdue(bill.date) && { backgroundColor: 'red' },
-                                isSoonDue(bill.date) && { backgroundColor: 'green' },
-                                !isOverdue(bill.date) && !isSoonDue(bill.date) && { backgroundColor: 'yellow' },
-                            ]}
-                            onPress={() => {
-                                setSelectedBill(bill);
-                                setNewBillTitle(bill.title);
-                                setNewBillAmount(String(bill.amount));
-                                setModalVisible(true);
-                            }}
-                        >
-                            <Text style={styles.billText}>{bill.title}: ${bill.amount}</Text>
-                        </TouchableOpacity>
-                    ))}
+                {billsToPay.map((bill) => (
+                    <TouchableOpacity
+                        key={bill.id}
+                        style={[
+                            styles.billItem,
+                            isOverdue(bill.date) && { backgroundColor: 'red' },
+                            isSoonDue(bill.date) && { backgroundColor: 'green' },
+                            !isOverdue(bill.date) && !isSoonDue(bill.date) && { backgroundColor: 'yellow' },
+                        ]}
+                        onPress={() => openModal(bill)}
+                    >
+                        <Text style={styles.billText}>{bill.title}: ${bill.amount}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
-            <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+            <TouchableOpacity style={styles.addButton} onPress={() => openModal(null)}>
                 <FontAwesome name="plus" size={24} color="white" />
             </TouchableOpacity>
             <Modal
@@ -198,18 +239,6 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 20,
         width: '100%',
-    },
-    button: {
-        backgroundColor: 'tomato',
-        padding: 10,
-        borderRadius: 5,
-        width: '100%',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
     },
 });
 
