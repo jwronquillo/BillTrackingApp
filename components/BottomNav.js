@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import DashboardScreen from "./Dashboard";
 import CalendarScreen from "./Calendar";
 import SettingsScreen from "./Settings";
+import TipsScreen from "./tips";
 
 const Tab = createBottomTabNavigator();
 const BottomNav = () => {
@@ -21,6 +22,9 @@ const BottomNav = () => {
                     } else if (route.name === 'Settings') {
                         iconName = 'cog';
                     }
+                     else if (route.name === 'Tips') {
+                        iconName = 'lightbulb-o';
+                    }
 
                     return <FontAwesome name={iconName} size={size} color={color} />;
                 },
@@ -32,6 +36,7 @@ const BottomNav = () => {
                 <Tab.Screen name="Dashboard" component={DashboardScreen} />
                 <Tab.Screen name="Calendar" component={CalendarScreen} />
                 <Tab.Screen name="Settings" component={SettingsScreen} />
+                <Tab.Screen name="Tips" component={TipsScreen} />
             </Tab.Navigator>
     );
 };
