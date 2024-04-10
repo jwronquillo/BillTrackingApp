@@ -9,18 +9,30 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/webpack-config": "^19.0.0",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "axios": "^1.6.8",
+    "cors": "^2.8.5",
     "date-fns": "^3.6.0",
-    "expo": "~50.0.14",
+    "expo": "^49.0.23",
     "expo-status-bar": "~1.11.1",
     "express": "^4.19.2",
+    "fs-extra": "^11.2.0",
+    "iconv-lite": "^0.6.3",
+    "mkdirs": "^1.0.0",
     "mongoose": "^8.3.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^3.1.0",
+    "pngjs": "^7.0.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-calendars": "^1.1304.1",
-    "react-router-dom": "^6.22.3"
+    "react-native-web": "~0.19.6",
+    "react-router-dom": "^6.22.3",
+    "source-map": "^0.7.4",
+    "source-map-generator": "^0.8.0",
+    "victory-native": "^40.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

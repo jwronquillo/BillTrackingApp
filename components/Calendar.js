@@ -11,6 +11,8 @@ const CalendarScreen = () => {
     const [selectedBill, setSelectedBill] = useState(null);
     const [newBillTitle, setNewBillTitle] = useState('');
     const [newBillAmount, setNewBillAmount] = useState('');
+    const [newBillDueDate, setNewBillDueDate] = useState('');
+
 
     useEffect(() => {
         const defaultDate = new Date().toISOString().split('T')[0];
@@ -21,21 +23,21 @@ const CalendarScreen = () => {
     
     const fetchBills = async (date) => {
         try {
-            const response = await fetch(`/api/bills?date=${date}`);
+            const response = await fetch(`http://localhost:8081/api/bills?date=${date}`);
             if(!response.ok) {
-                throw new Error('Rror fetching bills');
+                throw new Error('Error fetching bills');
             }
             const data = await response.json();
             setBillsToPay(data);
         } catch (error) {
             console.error("Error fetching bills:", error);
         }
-    } ;
+    };
 
     const addBill = async () => {
         if (newBillTitle && newBillAmount && selectedDate) {
             try {
-                const reponse = await fetch("/api/bills", {
+                const response = await fetch("http://localhost:8081/api/bills", {
                     method: 'POST',
                     headers: {
                         'Content-Type' : 'application/json',
@@ -61,11 +63,11 @@ const CalendarScreen = () => {
 
     const removeBill = async (id) => {
         try {
-            const reponse = await fetch (`/api/bills/${id}`, {
+            const response = await fetch (`http://localhost:8081/api/bills/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Error deleteing bill');
+                throw new Error('Error deleting bill');
             }
             fetchBills(selectedDate);
             setModalVisible(false);
@@ -77,7 +79,7 @@ const CalendarScreen = () => {
     const editBill = async () => {
         if (selectedBill && newBillTitle && newBillAmount) {
             try {
-                const response = await fetch (`/api/bills/${selectedBll.id}`, {
+                const response = await fetch (`http://localhost:8081/api/bills/${selectedBill.id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type' : 'application/json',
@@ -115,7 +117,7 @@ const CalendarScreen = () => {
         setSelectedBill(bill);
         setNewBillTitle(bill ? bill.title : '');
         setNewBillAmount(bill ? String(bill.amount) : '');
-        setModalVisible(false);
+        setModalVisible(true);
     };
 
     return (
@@ -239,6 +241,18 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 20,
         width: '100%',
+    },
+    button: {
+        backgroundColor: 'tomato',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
+        width: '100%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
     },
 });
 
