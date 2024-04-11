@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { FontAwesome } from '@expo/vector-icons';
+import * as SQLite from 'expo-sqlite'; // Import SQLite
+
+const db = SQLite.openDatabase('bills.db'); // Open or create SQLite database
 
 const CalendarScreen = () => {
     const [selectedDate, setSelectedDate] = useState('');
@@ -11,95 +14,103 @@ const CalendarScreen = () => {
     const [selectedBill, setSelectedBill] = useState(null);
     const [newBillTitle, setNewBillTitle] = useState('');
     const [newBillAmount, setNewBillAmount] = useState('');
-    const [newBillDueDate, setNewBillDueDate] = useState('');
-
 
     useEffect(() => {
         const defaultDate = new Date().toISOString().split('T')[0];
         setSelectedDate(defaultDate);
         setCurrentDate(defaultDate);
+        createTable(); // Ensure that the table is created when the component mounts
         fetchBills(defaultDate);
     }, []);
     
-    const fetchBills = async (date) => {
-        try {
-            const response = await fetch(`http://localhost:8081/api/bills?date=${date}`);
-            if(!response.ok) {
-                throw new Error('Error fetching bills');
-            }
-            const data = await response.json();
-            setBillsToPay(data);
-        } catch (error) {
-            console.error("Error fetching bills:", error);
-        }
+    const createTable = () => {
+        db.transaction(tx => {
+            tx.executeSql(
+                'CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, amount REAL, date TEXT)'
+            );
+        });
+    };
+
+    const fetchBills = (date) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT * FROM bills WHERE date = ?',
+                [date],
+                (_, { rows }) => {
+                    setBillsToPay(rows._array);
+                },
+                (_, error) => {
+                    console.error("Error fetching bills:", error);
+                }
+            );
+        });
     };
 
     const addBill = async () => {
         if (newBillTitle && newBillAmount && selectedDate) {
             try {
-                const response = await fetch("http://localhost:8081/api/bills", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type' : 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: newBillTitle,
-                        amount: parseFloat(newBillAmount),
-                        date: selectedDate,
-                    }),
+                db.transaction(tx => {
+                    tx.executeSql(
+                        'INSERT INTO bills (title, amount, date) VALUES (?, ?, ?)',
+                        [newBillTitle, parseFloat(newBillAmount), selectedDate],
+                        () => {
+                            fetchBills(selectedDate);
+                            setModalVisible(false);
+                            setNewBillTitle('');
+                            setNewBillAmount('');
+                        },
+                        (_, error) => {
+                            console.error("Error adding bill:", error);
+                        }
+                    );
                 });
-                if (!response.ok) {
-                    throw new Error('Error adding bill');
-                }
-                fetchBills(selectedDate);
-                setModalVisible(false);
-                setNewBillTitle('');
-                setNewBillAmount('');
             } catch (error) {
                 console.error("Error adding bill:", error);
             }
         }
     };
 
-    const removeBill = async (id) => {
-        try {
-            const response = await fetch (`http://localhost:8081/api/bills/${id}`, {
-                method: 'DELETE',
-            });
-            if (!response.ok) {
-                throw new Error('Error deleting bill');
-            }
-            fetchBills(selectedDate);
-            setModalVisible(false);
-        } catch (error) {
-            console.error("Error deleting bill:", error);
-        }
-    };
-
     const editBill = async () => {
         if (selectedBill && newBillTitle && newBillAmount) {
             try {
-                const response = await fetch (`http://localhost:8081/api/bills/${selectedBill.id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type' : 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: newBillTitle,
-                        amount: parseFloat(newBillAmount),
-                        date: selectedDate,
-                    }),
+                db.transaction(tx => {
+                    tx.executeSql(
+                        'UPDATE bills SET title = ?, amount = ?, date = ? WHERE id = ?',
+                        [newBillTitle, parseFloat(newBillAmount), selectedDate, selectedBill.id],
+                        () => {
+                            fetchBills(selectedDate);
+                            setModalVisible(false);
+                            setNewBillTitle('');
+                            setNewBillAmount('');
+                        },
+                        (_, error) => {
+                            console.error("Error editing bill:", error);
+                        }
+                    );
                 });
-                if (!response.ok) {
-                    throw new Error('Error editing bill');
-                }
-                fetchBills(selectedDate);
-                setModalVisible(false);
-                setNewBillTitle('');
-                setNewBillAmount('');
             } catch (error) {
                 console.error("Error editing bill:", error);
             }
+        }
+    };
+
+    const removeBill = async (id) => {
+        try {
+            db.transaction(tx => {
+                tx.executeSql(
+                    'DELETE FROM bills WHERE id = ?',
+                    [id],
+                    () => {
+                        fetchBills(selectedDate);
+                        setModalVisible(false);
+                    },
+                    (_, error) => {
+                        console.error("Error deleting bill:", error);
+                    }
+                );
+            });
+        } catch (error) {
+            console.error("Error deleting bill:", error);
         }
     };
 

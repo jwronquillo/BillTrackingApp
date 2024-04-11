@@ -9,3 +9,5 @@ export default function App() {
     </NavigationContainer>
   );
 };
+
+require('events').EventEmitter.defaultMaxListeners = 15;
