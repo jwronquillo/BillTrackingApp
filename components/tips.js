@@ -78,8 +78,11 @@ const TipsScreen = () => {
                         <Text>Knowing your expenses and saving goals will impact how you will save. Think on how you will allocate your money in expenses, short and long term savings. For example, if you need to repair something in your car, you might want to allocate a bit more compare to other savings such as retirement plan because you need the money for the repair immediately.</Text>
                         <Text>      </Text>
                         <Text style={{ fontStyle: 'italic' }}>References:https://bettermoneyhabits.bankofamerica.com/en/saving-budgeting/ways-to-save-money</Text>
+                        
                     </ScrollView>
-                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible1(false)} />
+                    <Pressable style={styles.closeButton} onPress={() => setModalVisible1(false)}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </Pressable>
                 </View>
             </Modal>
             <Modal
@@ -113,8 +116,11 @@ const TipsScreen = () => {
                         <Text style={{ fontStyle: 'italic' }}>Note: You may include utility bills in prioritizing to make sure you won't miss any payments</Text>
                         <Text>      </Text>
                         <Text style={{ fontStyle: 'italic' }}>References:https://www.lendingtree.com/student/simple-budget/</Text>
+                        
                     </ScrollView>
-                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible2(false)} />
+                    <Pressable style={styles.closeButton} onPress={() => setModalVisible2(false)}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </Pressable>
                 </View>
             </Modal>
             <Modal
@@ -142,8 +148,11 @@ const TipsScreen = () => {
                         <Text style={{ fontStyle: 'italic' }}>Note: Measure your goal first, this will help you in setting a reasonable deadline for your goal</Text>
                         <Text>      </Text>
                         <Text style={{ fontStyle: 'italic' }}>References:https://www.ramseysolutions.com/personal-growth/setting-financial-goals</Text>
+                        
                     </ScrollView>
-                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible3(false)} />
+                    <Pressable style={styles.closeButton} onPress={() => setModalVisible3(false)}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </Pressable>
                 </View>
             </Modal>
             <Modal
@@ -188,10 +197,12 @@ const TipsScreen = () => {
                         <Text style={{ fontWeight: 'bold' }}>Don't: Keep Your Savings in One Basket</Text>
                         <Text>Keeping your savings into different baskets can help you track your current progress. This also give extra safety against unfortunate events such as thefts, frauds, and other criminal activities.</Text>
                         <Text>      </Text>
-                        <Text style={{ fontStyle: 'italic' }}>Note: You can also ask your bank for a time deposit. This can prevent you from getting your savings right away and grow further with higher interest rates. This is very helpful especially in long-term savings such as retirement fund.</Text>
-                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic', marginBottom: 40 }}>Note: You can also ask your bank for a time deposit. This can prevent you from getting your savings right away and grow further with higher interest rates. This is very helpful especially in long-term savings such as retirement fund.</Text>
+
                     </ScrollView>
-                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible4(false)} />
+                    <Pressable style={styles.closeButton} onPress={() => setModalVisible4(false)}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                    </Pressable>
                 </View>
             </Modal>
         </View>
@@ -206,9 +217,9 @@ const styles = StyleSheet.create({
     },
     MoneyMinder: {
         marginTop: 40,
-        fontSize: 50,
+        fontSize: 60,
         fontWeight: 'bold',
-        fontFamily: 'Montserrat',
+
         color: '#007BFF',
     },
     MindYourMoney: {
@@ -229,6 +240,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: '7%',
         backgroundColor: '#A6DFAE',
         borderRadius: 25,
+    
         
     },
     buttonContent: {
@@ -236,36 +248,57 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between', // Aligns items to the ends of the container
         paddingHorizontal: 10,
+        
     },
     buttonText: {
         marginLeft: 5,
         fontSize: 30,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
     },
     modalContent: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFFFF', // White background for the modal
         padding: 20,
         borderRadius: 10,
-        maxHeight: '75%',
         width: '80%',
+        maxHeight: '75%', // Limiting the maximum height
+        elevation: 5, // Add elevation for a shadow effect
     },
     modalTitle: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10,
-        
     },
     modalTitleText: {
         marginLeft: 5,
         fontSize: 25,
         fontWeight: 'bold',
+        color: '#333333', // Dark color for the title text
     },
+    closeButton: {
+        backgroundColor: '#A6DFAE', // Coral color for the button
+        paddingVertical: 12, // Adjust padding as needed
+        paddingHorizontal: 24, // Adjust padding as needed
+        borderRadius: 15, // Round button corners
+        marginTop: 20, // Push it up from the bottom
+        alignSelf: 'center', // Center the button horizontally
+        elevation: 3, // Add elevation for a shadow effect
+        width: '78%',
+    },
+    closeButtonText: {
+        fontSize: 16,
+        color: 'black', // White color for the text
+        textAlign: 'center',
+        fontWeight: 'bold', // Bold font weight for emphasis
+    },
+    
+    
 });
 
 export default TipsScreen;
