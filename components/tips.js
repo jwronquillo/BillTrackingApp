@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, Pressable, Modal, Button } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable, Modal, Button, ScrollView } from "react-native";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 const TipsScreen = () => {
@@ -62,13 +62,24 @@ const TipsScreen = () => {
                 onRequestClose={() => setModalVisible1(false)}
             >
                 <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
+                    <ScrollView style={styles.modalContent}>
                         <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleText}>Modal 1</Text>
+                            <Text style={styles.modalTitleText}>Ways to Save Money</Text>
                         </View>
-                        <Text>Modal 1 Content</Text>
-                        <Button title="Close Modal" onPress={() => setModalVisible1(false)} />
-                    </View>
+                        <Text style={{ fontWeight: 'bold' }}>#1. Track Your Expenses</Text>
+                        <Text>Understanding your expenses is the first step in learning to save. Record your expsenses such as household utilities, groceries, and more. </Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#2. Set Specific Saving Goals</Text>
+                        <Text>Think of a purpose for both short and long term savings. You can estimate how much you will need and how long it will take to achieve.</Text>
+                        <Text style={{ fontStyle: 'italic' }}>Short-term savings: Vacation trip, Emergency Fund, or New Phone</Text>
+                        <Text style={{ fontStyle: 'italic' }}>Long-term savingss: Retirement Fund, Education Fund, Insurances</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#3. Determine Your Financial Priorities</Text>
+                        <Text>Knowing your expenses and saving goals will impact how you will save. Think on how you will allocate your money in expenses, short and long term savings. For example, if you need to repair something in your car, you might want to allocate a bit more compare to other savings such as retirement plan because you need the money for the repair immediately.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>References:https://bettermoneyhabits.bankofamerica.com/en/saving-budgeting/ways-to-save-money</Text>
+                    </ScrollView>
+                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible1(false)} />
                 </View>
             </Modal>
             <Modal
@@ -78,13 +89,32 @@ const TipsScreen = () => {
                 onRequestClose={() => setModalVisible2(false)}
             >
                 <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
+                    <ScrollView style={styles.modalContent}>
                         <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleText}>Modal 2</Text>
+                            <Text style={styles.modalTitleText}>Ways to Budget Money</Text>
                         </View>
-                        <Text>Modal 2 Content</Text>
-                        <Button title="Close Modal" onPress={() => setModalVisible2(false)} />
-                    </View>
+                        <Text style={{ fontWeight: 'bold' }}>#1. The "50/30/20"</Text>
+                        <Text>This method provides an allocation plan on the money that you receive monthly, mainly 50% for necessary expenses, 30% for discretionary expenses, and 20% savings and debts.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Necessary Expenses: Groceries, Bills, Transportation expenses</Text>
+                        <Text style={{ fontStyle: 'italic' }}>Discretionary Expenses: Wants such as new clothes or treating yourself during rest days</Text>
+                        <Text style={{ fontStyle: 'italic' }}>Savings and Debts: Loan payments, Insurances, Emergency Funds</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: These expenses may vary depending on your needs and knowing your expenses and priorities is important. You can also change the allocation such as 55/35/10, depending on your plan.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#2. The Envelope Method</Text>
+                        <Text>This method can be incorporated with the "50/30/20". You can use an envelope in separating the cash that will be used for different expenses. This can help in setting boundaries, avoiding spending more that the alloted budget.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: This might be uncomfortable to other people that doesn't like cold cash lying around their house but you can use different ways in separating your money such as E-wallets for household bills, or separate bank account for savings</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#3. The "Pay yourself first"</Text>
+                        <Text>This method focuses on making savings and paying debts. You will prioritized listing the amount of savings and debt payments first, the remaining amount will be allocated to your other expenses. This ensures that you will pay your debts on time and have some savings before anything else.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: You may include utility bills in prioritizing to make sure you won't miss any payments</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>References:https://www.lendingtree.com/student/simple-budget/</Text>
+                    </ScrollView>
+                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible2(false)} />
                 </View>
             </Modal>
             <Modal
@@ -94,13 +124,26 @@ const TipsScreen = () => {
                 onRequestClose={() => setModalVisible3(false)}
             >
                 <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
+                    <ScrollView style={styles.modalContent}>
                         <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleText}>Modal 3</Text>
+                            <Text style={styles.modalTitleText}>Setting Your Financial Goals</Text>
                         </View>
-                        <Text>Modal 3 Content</Text>
-                        <Button title="Close Modal" onPress={() => setModalVisible3(false)} />
-                    </View>
+                        <Text style={{ fontWeight: 'bold' }}>#1. Make Your Goals Specific</Text>
+                        <Text>This method will give more importance on your financial goal. Instead of "I want to save money for the future", you can set it to "I want to save for my new house". Specificying your goals can give you a view on how you will plan on saving.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#2. Make Your Goal Measurable</Text>
+                        <Text>Making your goal measurable allows you to see how much you will need and how long you can probably achieve it. For example, having an emergency fund that is worth 3 times of your monthly salary. You can achieve this by saving 10% of your salary every month for 30 months, or 20% for a much shorter time of 15 months.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: Remember to set priorities if you have multiple goals. This will help you in managing your goals and think on how you can achieve them.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#3. Give yourself a deadline</Text>
+                        <Text>"I will start someday" sometimes held you back in making your goal a reality. Let's say that you want to buy a new TV for your living room and plan to save bit-by-bit in order to afford it. Setting a deadline creates importance on your goal that will make sure that you will be able to achieve your goal.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: Measure your goal first, this will help you in setting a reasonable deadline for your goal</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>References:https://www.ramseysolutions.com/personal-growth/setting-financial-goals</Text>
+                    </ScrollView>
+                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible3(false)} />
                 </View>
             </Modal>
             <Modal
@@ -110,13 +153,45 @@ const TipsScreen = () => {
                 onRequestClose={() => setModalVisible4(false)}
             >
                 <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
+                    <ScrollView style={styles.modalContent}>
                         <View style={styles.modalTitle}>
-                            <Text style={styles.modalTitleText}>Modal 4</Text>
+                            <Text style={styles.modalTitleText}>Setting Your Financial Goals</Text>
                         </View>
-                        <Text>Modal 4 Content</Text>
-                        <Button title="Close Modal" onPress={() => setModalVisible4(false)} />
-                    </View>
+                        <Text style={{ fontWeight: 'bold' }}>#1. Saving Money</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Do: Track Your Expenses</Text>
+                        <Text>Tracking your expenses gives you an idea on how much you can possibly save. This can also give ideas on how you can cut down some of the expenses in order to save more. </Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: Future expenses still may vary compare from your previos tracks but still, it will give you an idea on how much you can save</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>Don't: Keep Your Savings in the Same Basket with Expenses</Text>
+                        <Text>Let's say you only have one bank account where you withdraw your money and keep your savings. It is much better to have a different bank account for your savings. This will help you track how much you are saving and avoid spending your savings because of losing track in one account</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: Setting a new bank account requires a minimum initial deposit. You might consider other ways in keeping money temporarily such as piggy banks, or safe compartment in your room.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#2. Budgeting Money</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Do: Plan Ahead</Text>
+                        <Text>Planning ahead before recieving your next salary will give you more preparation. For example, you might change how you will budget your expenses on months with hollidays, or months that foresees higher household utilities such as electricity and water. Planning this ahead will also help you on your saving goals.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: There might be small adjustments as we cannot predict the future but still, planning ahead makes the adjustments less stressful.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>Don't: Restrict Your Budget Too Much</Text>
+                        <Text>Being too tight can affect how you see budgeting. You may feel bad in times that you overspend. Giving some allowances on expected expenses might help to avoid overspending. </Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: There will be times that you will overspend unexpectedly but don't lose grip on your budgeting. You can evaluate on what happened and develop a plan to handle it next time.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>#3. Setting Goals</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Do: Make Your Goal into Smaller Goals</Text>
+                        <Text>Let's say you want to renovate your house. You can set smaller goals like fixing the bathroom, upgrading the kitchen, or other parts of your home. In this way, you can handle each goal because it will be more specific and easier to plan.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: This can also help you feel more optimistic as achieving a goal can give you possitive emotions</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontWeight: 'bold' }}>Don't: Keep Your Savings in One Basket</Text>
+                        <Text>Keeping your savings into different baskets can help you track your current progress. This also give extra safety against unfortunate events such as thefts, frauds, and other criminal activities.</Text>
+                        <Text>      </Text>
+                        <Text style={{ fontStyle: 'italic' }}>Note: You can also ask your bank for a time deposit. This can prevent you from getting your savings right away and grow further with higher interest rates. This is very helpful especially in long-term savings such as retirement fund.</Text>
+                        <Text>      </Text>
+                    </ScrollView>
+                    <Button color= 'transparent' title="Close" onPress={() => setModalVisible4(false)} />
                 </View>
             </Modal>
         </View>
@@ -176,7 +251,9 @@ const styles = StyleSheet.create({
     modalContent: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        borderRadius: 10
+        borderRadius: 10,
+        maxHeight: '75%',
+        width: '80%',
     },
     modalTitle: {
         flexDirection: 'row',
@@ -186,7 +263,7 @@ const styles = StyleSheet.create({
     },
     modalTitleText: {
         marginLeft: 5,
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
     },
 });
