@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Animated } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { FontAwesome } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite'; // Import SQLite
@@ -14,14 +14,46 @@ const CalendarScreen = () => {
     const [selectedBill, setSelectedBill] = useState(null);
     const [newBillTitle, setNewBillTitle] = useState('');
     const [newBillAmount, setNewBillAmount] = useState('');
+    const [fadeAnim] = useState(new Animated.Value(0));
+    const [fadeBillAnim] = useState(new Animated.Value(0)); // Add fade animation for bill container
+
+    useEffect(() => {
+        fadeIn();
+    }, []);
 
     useEffect(() => {
         const defaultDate = new Date().toISOString().split('T')[0];
         setSelectedDate(defaultDate);
         setCurrentDate(defaultDate);
-        createTable(); // Ensure that the table is created when the component mounts
+        createTable();
         fetchBills(defaultDate);
     }, []);
+
+    useEffect(() => {
+        fadeInBillContainer();
+    }, [billsToPay]); // Trigger fade animation when billsToPay changes
+
+    const fadeIn = () => {
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }
+        ).start();
+    };
+
+    const fadeInBillContainer = () => {
+        Animated.timing(
+            fadeBillAnim,
+            {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }
+        ).start();
+    };
     
     const createTable = () => {
         db.transaction(tx => {
@@ -132,24 +164,29 @@ const CalendarScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
             <View style={styles.calendarContainer}>
-                <Calendar
-                    onDayPress={(day) => {
-                        setSelectedDate(day.dateString);
-                        fetchBills(day.dateString);
-                    }}
-                    markedDates={{
-                        [selectedDate]: { selected: true, selectedColor: 'tomato' },
-                        [currentDate]: { selected: true, dotColor: 'black', marked: true },
-                    }}
-                    theme={{
-                        todayTextColor: 'green',
-                        selectedDayBackgroundColor: 'rgba(0, 0, 0, 0.2)',
-                    }}
-                />
+                <View style={styles.calendarWrapper}>
+                    <Calendar
+                        onDayPress={(day) => {
+                            setSelectedDate(day.dateString);
+                            fetchBills(day.dateString);
+                        }}
+                        markedDates={{
+                            [selectedDate]: { selected: true, selectedColor: 'tomato' },
+                            [currentDate]: { selected: true, dotColor: 'black', marked: true },
+                        }}
+                        theme={{
+                            todayTextColor: 'green',
+                            selectedDayBackgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }}
+                    />
+                </View>
             </View>
-            <View style={styles.billsContainer}>
+            <View style={styles.upcoming}>
+                <Text style={styles.ucText}>Upcoming Bills</Text>
+            </View>
+            <Animated.View style={[styles.billsContainer, { opacity: fadeBillAnim }]}>
                 {billsToPay.map((bill) => (
                     <TouchableOpacity
                         key={bill.id}
@@ -161,10 +198,11 @@ const CalendarScreen = () => {
                         ]}
                         onPress={() => openModal(bill)}
                     >
-                        <Text style={styles.billText}>{bill.title}: ${bill.amount}</Text>
+                        <Text style={styles.billText}>{bill.title}: </Text>
+                        <Text style={styles.billText}>Php { bill.amount}</Text>
                     </TouchableOpacity>
                 ))}
-            </View>
+            </Animated.View>
             <TouchableOpacity style={styles.addButton} onPress={() => openModal(null)}>
                 <FontAwesome name="plus" size={24} color="white" />
             </TouchableOpacity>
@@ -174,34 +212,36 @@ const CalendarScreen = () => {
                 onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>{selectedBill ? 'Edit Bill' : 'Add Bill'}</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Title"
-                        value={newBillTitle}
-                        onChangeText={setNewBillTitle}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Amount"
-                        keyboardType="numeric"
-                        value={newBillAmount}
-                        onChangeText={setNewBillAmount}
-                    />
-                    <TouchableOpacity style={styles.button} onPress={selectedBill ? editBill : addBill}>
-                        <Text style={styles.buttonText}>{selectedBill ? 'Edit Bill' : 'Add Bill'}</Text>
-                    </TouchableOpacity>
-                    {selectedBill &&
-                        <TouchableOpacity style={styles.button} onPress={() => removeBill(selectedBill.id)}>
-                            <Text style={styles.buttonText}>Delete Bill</Text>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>{selectedBill ? 'Edit Bill' : 'Add Bill'}</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Title"
+                            value={newBillTitle}
+                            onChangeText={setNewBillTitle}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Amount"
+                            keyboardType="numeric"
+                            value={newBillAmount}
+                            onChangeText={setNewBillAmount}
+                        />
+                        <TouchableOpacity style={styles.button} onPress={selectedBill ? editBill : addBill}>
+                            <Text style={styles.buttonText}>{selectedBill ? 'Edit Bill' : 'Add Bill'}</Text>
                         </TouchableOpacity>
-                    }
-                    <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
-                        <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableOpacity>
+                        {selectedBill &&
+                            <TouchableOpacity style={[styles.button,styles.deletebutton]} onPress={() => removeBill(selectedBill.id)}>
+                                <Text style={[styles.buttonText,styles.deletebutton]} >Delete Bill</Text>
+                            </TouchableOpacity>
+                        }
+                        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                            <Text style={styles.buttonText}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Modal>
-        </View>
+        </Animated.View>
     );
 };
 
@@ -212,22 +252,57 @@ const styles = StyleSheet.create({
     calendarContainer: {
         padding: 20,
     },
+    calendarWrapper: {
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: 'white',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    upcoming:{
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    ucText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textTransform: 'uppercase', 
+    },
     billsContainer: {
         padding: 20,
     },
     billItem: {
-        marginBottom: 10,
-        padding: 10,
-        borderRadius: 5,
+        marginBottom: 15,
+        padding: 15,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 5,
+        elevation: 5, 
     },
     billText: {
-        fontSize: 16,
+        fontSize: 18, // Decrease font size slightly
+        fontWeight: 'bold',
+        color: '#333',
     },
     addButton: {
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: 'tomato',
+        backgroundColor: '#007BFF',
         borderRadius: 50,
         width: 50,
         height: 50,
@@ -236,9 +311,17 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1,
-        padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    },
+    modalContent: {
+        backgroundColor: '#FFFFFF', // White background for the modal content
+        padding: 30,
+        borderRadius: 10,
+        width: '80%',
+        elevation: 5, // Add elevation for a shadow effect
+
     },
     modalTitle: {
         fontSize: 20,
@@ -247,23 +330,26 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: '#ccc', // Lighter border color
         borderRadius: 5,
         padding: 10,
         marginBottom: 20,
         width: '100%',
     },
     button: {
-        backgroundColor: 'tomato',
-        padding: 10,
+        backgroundColor: '#007BFF',
+        padding: 12,
         borderRadius: 5,
         marginBottom: 10,
         width: '100%',
         alignItems: 'center',
     },
     buttonText: {
-        color: 'white',
+        color: '#fff',
         fontSize: 16,
+    },
+    deletebutton: {
+        backgroundColor: 'red',
     },
 });
 

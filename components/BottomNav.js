@@ -28,15 +28,16 @@ const BottomNav = () => {
 
                     return <FontAwesome name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: 'tomato',
+                tabBarActiveTintColor: '#007BFF',
                 tabBarInactiveTintColor: 'gray',
                 tabBarStyle: {display: 'flex' },
             })}
             >
                 <Tab.Screen name="Dashboard" component={DashboardScreen} />
                 <Tab.Screen name="Calendar" component={CalendarScreen} />
-                <Tab.Screen name="Settings" component={SettingsScreen} />
                 <Tab.Screen name="Tips" component={TipsScreen} />
+                <Tab.Screen name="Settings" component={SettingsScreen} />
+                
             </Tab.Navigator>
     );
 };
